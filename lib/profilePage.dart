@@ -76,54 +76,168 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Profile")),
-      body: Center(
-        child: _isLoading
-          ? const CircularProgressIndicator()
-          : Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  "Total Tasks",
-                  style: TextStyle(fontSize: 20, color: Colors.grey),
-                ),
-                Text(
-                  "$_totalCount",
-                  style: const TextStyle(
-                    fontSize: 60,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue
-                  ),
-                ),
-                const SizedBox(height: 40),
-                const Text(
-                  "Pending Tasks",
-                  style: TextStyle(fontSize: 20, color: Colors.grey),
-                ),
-                Text(
-                  "$_pendingCount",
-                  style: const TextStyle(
-                    fontSize: 60,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.orange
-                  ),
-                ),
-                const SizedBox(height: 40),
-                const Text(
-                  "Completed Tasks",
-                  style: TextStyle(fontSize: 20, color: Colors.grey),
-                ),
-                Text(
-                  "$_completedCount",
-                  style: const TextStyle(
-                    fontSize: 60,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green
-                  ),
-                ),
-              ],
-            ),
+      backgroundColor: const Color(0xFFF7F9FC),
+      appBar: AppBar(
+        title: const Text('Profile'),
+        elevation: 0,
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.black87),
+        titleTextStyle: const TextStyle(
+          color: Colors.black87,
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+        ),
       ),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.04),
+                          blurRadius: 16,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          radius: 36,
+                          backgroundColor: Colors.blue.shade100,
+                          child: Icon(
+                            Icons.person,
+                            size: 36,
+                            color: Colors.blue.shade800,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'ผู้ใช้ของคุณ',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'สรุปงานล่าสุดของคุณ',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: Colors.grey.shade200),
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                'ทั้งหมด',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey.shade700,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                '$_totalCount',
+                                style: const TextStyle(
+                                  fontSize: 36,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: Colors.grey.shade200),
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                'ยังไม่เสร็จ',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey.shade700,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                '$_pendingCount',
+                                style: const TextStyle(
+                                  fontSize: 36,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.orange,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.grey.shade200),
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          'เสร็จแล้ว',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey.shade700,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          '$_completedCount',
+                          style: const TextStyle(
+                            fontSize: 36,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
     );
   }
 }

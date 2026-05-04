@@ -73,100 +73,99 @@ class _AddTaskPageState extends State<AddTaskPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('เพิ่มกิจกรรม'),
         centerTitle: true,
-        elevation: 0,
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.blue.shade50, Colors.white],
-          ),
+        elevation: 1,
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.black87),
+        titleTextStyle: const TextStyle(
+          color: Colors.black87,
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
         ),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'สร้างกิจกรรมใหม่',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'สร้างกิจกรรมใหม่',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
                       ),
-                      const SizedBox(height: 24),
-                      _buildTextField(
-                        _nameController,
-                        'ชื่อกิจกรรม',
-                        Icons.title,
-                        false,
-                      ),
-                      const SizedBox(height: 16),
-                      _buildTextField(
-                        _dateController,
-                        'วันที่',
-                        Icons.calendar_today,
-                        true,
-                        onTap: _selectDate,
-                      ),
-                      const SizedBox(height: 16),
-                      _buildTextField(
-                        _typeController,
-                        'ประเภทกิจกรรม',
-                        Icons.category,
-                        false,
-                      ),
-                      const SizedBox(height: 32),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 56,
-                        child: ElevatedButton(
-                          onPressed: _createTask,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            elevation: 2,
+                    ),
+                    const SizedBox(height: 24),
+                    _buildTextField(
+                      _nameController,
+                      'ชื่อกิจกรรม',
+                      Icons.title,
+                      false,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      _dateController,
+                      'วันที่',
+                      Icons.calendar_today,
+                      true,
+                      onTap: _selectDate,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      _typeController,
+                      'ประเภทกิจกรรม',
+                      Icons.category,
+                      false,
+                    ),
+                    const SizedBox(height: 32),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 56,
+                      child: ElevatedButton(
+                        onPressed: _createTask,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue.shade800,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.add_circle, size: 24),
-                              SizedBox(width: 12),
-                              Text(
-                                'เพิ่มกิจกรรม',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                          elevation: 2,
+                        ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.add_circle, size: 24),
+                            SizedBox(width: 12),
+                            Text(
+                              'เพิ่มกิจกรรม',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -68,6 +68,40 @@ class _EditPageState extends State<EditPage> {
     }
   }
 
+  Widget _buildTextField(
+    TextEditingController controller,
+    String label,
+    IconData icon,
+    bool readOnly, {
+    VoidCallback? onTap,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: TextField(
+        controller: controller,
+        readOnly: readOnly,
+        onTap: onTap,
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: Icon(icon, color: Colors.blue.shade700),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+          filled: true,
+          fillColor: Colors.white,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 16,
+          ),
+        ),
+      ),
+    );
+  }
+
   Future<void> _updateTask() async {
     final url = Uri.parse('https://my-api-dart.vercel.app/list/${widget.id}');
     final headers = {'Content-Type': 'application/json'};
@@ -101,22 +135,21 @@ class _EditPageState extends State<EditPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('แก้ไขกิจกรรม'),
         centerTitle: true,
-        elevation: 0,
+        elevation: 1,
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.black87),
+        titleTextStyle: const TextStyle(
+          color: Colors.black87,
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.calendar_today),
-            onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const Calendar()),
-              );
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.person),
+            icon: const Icon(Icons.person, color: Colors.black87),
             onPressed: () {
               Navigator.push(
                 context,
@@ -126,129 +159,86 @@ class _EditPageState extends State<EditPage> {
           ),
         ],
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.blue.shade50, Colors.white],
-          ),
-        ),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'แก้ไขกิจกรรม',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'แก้ไขกิจกรรม',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
                       ),
-                      const SizedBox(height: 24),
-                      _buildTextField(
-                        _nameController,
-                        'ชื่อกิจกรรม',
-                        Icons.title,
-                        false,
-                      ),
-                      const SizedBox(height: 16),
-                      _buildTextField(
-                        _dateController,
-                        'วันที่',
-                        Icons.calendar_today,
-                        true,
-                        onTap: _selectDate,
-                      ),
-                      const SizedBox(height: 16),
-                      _buildTextField(
-                        _typeController,
-                        'ประเภทกิจกรรม',
-                        Icons.category,
-                        false,
-                      ),
-                      const SizedBox(height: 32),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 56,
-                        child: ElevatedButton(
-                          onPressed: _updateTask,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            elevation: 2,
+                    ),
+                    const SizedBox(height: 24),
+                    _buildTextField(
+                      _nameController,
+                      'ชื่อกิจกรรม',
+                      Icons.title,
+                      false,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      _dateController,
+                      'วันที่',
+                      Icons.calendar_today,
+                      true,
+                      onTap: _selectDate,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      _typeController,
+                      'ประเภทกิจกรรม',
+                      Icons.category,
+                      false,
+                    ),
+                    const SizedBox(height: 32),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 56,
+                      child: ElevatedButton(
+                        onPressed: _updateTask,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue.shade800,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.edit, size: 24),
-                              SizedBox(width: 12),
-                              Text(
-                                'บันทึกการแก้ไข',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                          elevation: 2,
+                        ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.edit, size: 24),
+                            SizedBox(width: 12),
+                            Text(
+                              'อัพเดทกิจกรรม',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextField(
-    TextEditingController controller,
-    String label,
-    IconData icon,
-    bool readOnly, {
-    VoidCallback? onTap,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: TextField(
-        controller: controller,
-        readOnly: readOnly,
-        onTap: onTap,
-        decoration: InputDecoration(
-          labelText: label,
-          prefixIcon: Icon(icon, color: Colors.blue),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
-          ),
-          filled: true,
-          fillColor: Colors.white,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 16,
-          ),
+            ),
+          ],
         ),
       ),
     );
