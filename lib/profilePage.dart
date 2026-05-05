@@ -53,7 +53,6 @@ class _ProfilePageState extends State<ProfilePage> {
       }
     } catch (e) {
       print("Error: $e");
-      setState(() => _isLoading = false);
     }
   }
 

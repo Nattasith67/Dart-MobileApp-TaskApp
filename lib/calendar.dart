@@ -24,8 +24,7 @@ class ListScreenState extends State<Calendar> {
   void initState() {
     super.initState();
     _fetchTasks();
-    _checkDailyTasks();
-  }
+    }
 
   @override
   void dispose() {
@@ -33,41 +32,6 @@ class ListScreenState extends State<Calendar> {
     super.dispose();
   }
 
-  void _checkDailyTasks() {
-    _notificationTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (!mounted) return;
-      _showDueTaskNotifications();
-    });
-    _showDueTaskNotifications();
-  }
-
-  void _showDueTaskNotifications() {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-
-    for (var task in _tasks) {
-      if (task['status'] == 'Completed') continue;
-
-      final taskDateStr = task['taskdate'];
-      if (taskDateStr == null) continue;
-
-      try {
-        final taskDate = DateTime.parse(taskDateStr);
-        final taskDay = DateTime(taskDate.year, taskDate.month, taskDate.day);
-
-        if (taskDay == today) {
-          _showTaskNotification(task['name'] ?? 'กิจกรรม');
-        }
-      } catch (e) {
-        print('Error parsing date: $e');
-      }
-    }
-  }
-
-  void _showTaskNotification(String taskName) {
-    if (!mounted) return;
-    _showSnackbar('วันนี้มีกิจกรรม: $taskName');
-  }
 
   Future<void> _fetchTasks() async {
     final response = await http.get(
@@ -108,6 +72,34 @@ class ListScreenState extends State<Calendar> {
         _tasks = json.decode(response.body);
         _filter = 'completed';
       });
+    }
+  }
+
+  Future<void> _fetchOverdueTasks() async {
+    final response = await http.get(
+      Uri.parse('https://my-api-dart.vercel.app/list'),
+    );
+    print('All Status: ${response.statusCode}');
+    print('All Body: ${response.body}');
+    if (mounted) {
+      setState(() {
+        final allTasks = json.decode(response.body);
+        _tasks = allTasks.where((task) => _isOverdue(task)).toList();
+        _filter = 'overdue';
+      });
+    }
+  }
+
+  bool _isOverdue(dynamic task) {
+    if (task['status'] == 'Completed') {
+      return false;
+    }
+    try {
+      final taskDate = DateTime.parse(task['taskdate']);
+      final today = DateTime.now();
+      return taskDate.isBefore(DateTime(today.year, today.month, today.day));
+    } catch (e) {
+      return false;
     }
   }
 
@@ -170,7 +162,6 @@ class ListScreenState extends State<Calendar> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text("Calendar"),
-        elevation: 1,
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.black87),
         titleTextStyle: const TextStyle(
@@ -203,13 +194,6 @@ class ListScreenState extends State<Calendar> {
               color: Colors.white,
               borderRadius: BorderRadius.circular(18),
               border: Border.all(color: Colors.grey.shade200),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.04),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -306,6 +290,36 @@ class ListScreenState extends State<Calendar> {
                     ),
                   ),
                 ),
+                TextButton.icon(
+                  style: TextButton.styleFrom(
+                    backgroundColor: _filter == 'overdue'
+                        ? Colors.red.shade50
+                        : Colors.transparent,
+                    foregroundColor: _filter == 'overdue'
+                        ? Colors.red.shade800
+                        : Colors.grey.shade600,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 8,
+                    ),
+                  ),
+                  onPressed: _fetchOverdueTasks,
+                  icon: Icon(
+                    Icons.warning,
+                    color: _filter == 'overdue' ? Colors.red : Colors.grey,
+                  ),
+                  label: Text(
+                    'เลยกำหนด',
+                    style: TextStyle(
+                      color: _filter == 'overdue'
+                          ? Colors.red.shade700
+                          : Colors.grey.shade700,
+                      fontWeight: _filter == 'overdue'
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -317,6 +331,8 @@ class ListScreenState extends State<Calendar> {
                 final task = _tasks[index];
                 final bool isCompleted = task['status'] == 'Completed';
 
+                final bool isOverdue = _isOverdue(task);
+                
                 return Card(
                   margin: const EdgeInsets.only(bottom: 10),
                   elevation: 2,
@@ -324,13 +340,17 @@ class ListScreenState extends State<Calendar> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                     side: BorderSide(
-                      color: isCompleted
+                      color: isOverdue
+                          ? Colors.red.shade700
+                          : isCompleted
                           ? Colors.green.shade700
                           : Colors.yellow.shade700,
                       width: 1.8,
                     ),
                   ),
-                  color: isCompleted ? Colors.green.shade50 : Colors.yellow.shade50,
+                  color: isOverdue
+                      ? Colors.red.shade50
+                      : isCompleted ? Colors.green.shade50 : Colors.yellow.shade50,
                   child: Padding(
                     padding: const EdgeInsets.all(14),
                     child: Column(
@@ -344,7 +364,13 @@ class ListScreenState extends State<Calendar> {
                                 color: Colors.green,
                                 size: 24,
                               ),
-                            if (!isCompleted)
+                            if (!isCompleted && isOverdue)
+                              const Icon(
+                                Icons.warning,
+                                color: Colors.red,
+                                size: 24,
+                              ),
+                            if (!isCompleted && !isOverdue)
                               const Icon(
                                 Icons.work,
                                 color: Colors.yellow,
@@ -370,9 +396,11 @@ class ListScreenState extends State<Calendar> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Status: ${task['status']}",
+                              "Status: ${task['status']}${isOverdue && !isCompleted ? ' (เลยกำหนด)' : ''}",
                               style: TextStyle(
-                                color: isCompleted
+                                color: isOverdue && !isCompleted
+                                    ? Colors.red.shade700
+                                    : isCompleted
                                     ? Colors.green.shade700
                                     : Colors.yellow.shade800,
                                 fontWeight: FontWeight.bold,
@@ -430,7 +458,7 @@ class ListScreenState extends State<Calendar> {
                                 onPressed: () =>
                                     _completeTask(task['id'], index),
                               ),
-                          ],
+                            ],
                         ),
                       ],
                     ),
